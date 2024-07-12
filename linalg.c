@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "linalg.h"
 
+
 float *vector_addition(float *v1, float *v2, const size_t dim)
 {
     float *result = calloc(dim, sizeof(float));

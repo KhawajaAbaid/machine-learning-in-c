@@ -6,6 +6,8 @@
 #ifndef LINALG_H
 #define LINALG_H
 
+#include <stddef.h>
+
 
 float *vector_addition(float *v1, float *v2, const size_t dim);
 float *vector_subtraction(float *v1, float *v2, const size_t dim);
