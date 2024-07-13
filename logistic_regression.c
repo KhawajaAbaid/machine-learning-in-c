@@ -80,10 +80,7 @@ float binary_crossentropy_loss(float y, float y_pred)
 // Runs backpropagation for a single instance
 grad_and_metrics *backprop(model *m, float *x, float y)
 {
-    // metrics
     struct metrics *metrics = (struct metrics *) malloc(sizeof(struct metrics *));
-
-    // Gradient has the same structure as model
     gradient *grad = (gradient *) malloc(sizeof(gradient));
     grad->in_dim = m->in_dim;
     grad->out_dim = m->out_dim;
