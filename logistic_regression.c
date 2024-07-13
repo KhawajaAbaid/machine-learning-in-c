@@ -176,11 +176,11 @@ void fit(model *m, dataset *ds, float learning_rate, const size_t batch_size,
     
     struct metrics *batch_metrics;
     struct metrics *epoch_metrics = malloc(sizeof(struct metrics));
-    epoch_metrics->loss = 0.0f;
-    epoch_metrics->accuracy = 0.0f;
     size_t batch = 0;
     for (size_t epoch = 0; epoch < n_epochs; epoch++)
     {
+        epoch_metrics->loss = 0.0f;
+        epoch_metrics->accuracy = 0.0f;
         // 2. Create batches
         for (batch = 0; batch < n_batches; batch++)
         {
