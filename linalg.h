@@ -3,8 +3,7 @@
  *
  * All functions are pure.
  */
-#ifndef LINALG_H
-#define LINALG_H
+#pragma once
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -23,6 +22,3 @@ float *matrix_vector_dot_product(float **m, float *v, const size_t n_rows,
 float **matmul(float **m1, float **m2, const size_t n_rows_m1,
         const size_t n_cols_m1, const size_t n_cols_m2);
 float **matrix_transpose(float **m, const size_t n_rows, const size_t n_cols);
-
-
-#endif
