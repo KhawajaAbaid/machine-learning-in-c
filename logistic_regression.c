@@ -220,4 +220,8 @@ void main()
     
     printf("Training...\n");
     fit(logistic_regressor, weather_ds, 0.005f, 512, 300);
+    
+    free(weather_ds->x);
+    free(weather_ds->y);
+    free(weather_ds);
 }
