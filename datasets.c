@@ -52,3 +52,92 @@ dataset *load_weather()
 
     return d;
 }
+
+
+/*
+ * MNIST dataset. Load the original mnsit dataset from binary format.
+ * Then preprocess it to 1. Normalize images 2. One hot labels
+ */
+
+float *normalize_mnist_images(unsigned char *images, size_t image_size, 
+        size_t n_samples)
+{
+    float *images_normalized = calloc(image_size * n_samples, sizeof(float));
+    for (size_t i = 0; i < (image_size * n_samples); i++)
+    {
+        images_normalized[i] = images[i] / 255.0f;
+    }
+    return images_normalized;
+}
+
+
+float *one_hot(unsigned char *labels, size_t n_classes, size_t n_samples)
+{
+    float *one_hot_labels = calloc(n_samples * n_classes, sizeof(float));
+    size_t label;
+    for (size_t i = 0; i < n_samples; i++)
+    {
+        label = (size_t) labels[i];
+        one_hot_labels[i * n_classes + label] =  1.0f;
+    }
+
+    return one_hot_labels;
+}
+
+
+dataset *load_mnist()
+{
+    const size_t n_images = 60000;
+    const size_t image_size = 28 * 28;
+
+    unsigned char *images = malloc(n_images * image_size);
+    unsigned char *labels = malloc(n_images * sizeof(unsigned char));
+
+    FILE *fp;
+    size_t ret;
+    
+    fp = fopen("./datasets/mnist_x.bin", "rb");
+    if (fp == NULL)
+    {
+        printf("Error: Failed to load mnist_x.bin file.\n");
+        exit(EXIT_FAILURE);
+    }
+    ret = fread(images, sizeof(unsigned char), n_images * image_size, fp);
+    if (ret != n_images * image_size)
+    {
+        printf("Error: Failed to read mnist_x data.\n");
+        exit(EXIT_FAILURE);
+    }
+    fclose(fp);
+
+    fp = fopen("./datasets/mnist_y.bin", "rb");
+    if (fp == NULL)
+    {
+        printf("Error: Failed to load mnist_y.bin file.\n");
+        exit(EXIT_FAILURE);
+    }
+    ret = fread(labels, sizeof(unsigned char), n_images, fp);
+    if (ret != n_images)
+    {
+        printf("Error: Failed to read mnist_y file.\n");
+        exit(EXIT_FAILURE);
+    }
+    fclose(fp);
+
+    // normalize input values
+    float *images_normlaized = normalize_mnist_images(images, image_size,
+            n_images);
+    free(images);
+
+    float *one_hot_labels = one_hot(labels, 10, n_images);
+    free(labels);
+
+    dataset *ds = malloc(sizeof(dataset));
+    ds->x = images_normlaized;
+    ds->y = one_hot_labels;
+    ds->n_samples = n_images;
+    ds->dim = image_size;
+    return ds;
+}
+
+
