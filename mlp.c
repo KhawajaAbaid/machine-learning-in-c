@@ -4,42 +4,6 @@
 #include "mlp.h"
 
 
-float *sigmoid(float *x, const size_t dim)
-{
-    float *result = calloc(dim, sizeof(float));
-    for (size_t i = 0; i < dim; i++)
-    {
-        result[i] = 1.0f / (1.0f + expf(-x[i]));
-    }
-    return result;
-}
-
-
-float *sigmoid_prime(float *x, const size_t dim)
-{
-    float *result = malloc(dim * sizeof(float));
-
-    float *sig = sigmoid(x, dim);
-    for (size_t i = 0; i < dim; i++)
-    {
-        result[i] = sig[i] * (1.0f - sig[i]); 
-    }
-    return result;
-}
-
-
-float crossentropy_loss(float *y, float *y_pred, const size_t dim)
-{
-    float loss = 0.0f;
-
-    for (size_t i = 0; i < dim; i++)
-    {
-        loss += y[i] * log(y_pred[i]) + (1.0 - y[i]) * log(1.0 - y_pred[i]); 
-    }
-    return -loss;
-}
-
-
 size_t argmax(float *x, const size_t dim)
 {
     size_t max_idx = 0;

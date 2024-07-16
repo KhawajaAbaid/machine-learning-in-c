@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include "random.h"
+#include <math.h>
 
 
 typedef struct
@@ -87,7 +88,7 @@ void initialize_weights(const unsigned int seed, mlp *model)
         b = (float *) calloc(l->out_dim, sizeof(float));
         for (size_t j = 0; j < l->out_dim; j++)
         {
-            w[j] = (float *) malloc(l->in_dim * sizeof(float));
+            w[j] = (float *)malloc(l->in_dim * sizeof(float));
 
             for (size_t k = 0; k < l->in_dim; k++)
             {
@@ -142,6 +143,43 @@ static inline void free_grad_and_metrics(grad_and_metrics *gam)
     free(gam->metrics);
     free(gam);
 }
+
+
+float *sigmoid(float *x, const size_t dim)
+{
+    float *result = (float *) calloc(dim, sizeof(float));
+    for (size_t i = 0; i < dim; i++)
+    {
+        result[i] = 1.0f / (1.0f + expf(-x[i]));
+    }
+    return result;
+}
+
+
+float *sigmoid_prime(float *x, const size_t dim)
+{
+    float *result = (float *) malloc(dim * sizeof(float));
+
+    float *sig = sigmoid(x, dim);
+    for (size_t i = 0; i < dim; i++)
+    {
+        result[i] = sig[i] * (1.0f - sig[i]); 
+    }
+    return result;
+}
+
+
+float crossentropy_loss(float *y, float *y_pred, const size_t dim)
+{
+    float loss = 0.0f;
+
+    for (size_t i = 0; i < dim; i++)
+    {
+        loss += y[i] * log(y_pred[i]) + (1.0 - y[i]) * log(1.0 - y_pred[i]); 
+    }
+    return -loss;
+}
+
 
 
 void accumulate_grad(mlp *accumulated_gradient, mlp* new_gradient)
