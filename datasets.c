@@ -1,6 +1,13 @@
 #include "datasets.h"
 
 
+void free_dataset(dataset *ds)
+{
+    free(ds->x);
+    free(ds->y);
+    free(ds);
+}
+
 /*
  * Rain in Australia dataset
  * Ref: https://www.kaggle.com/datasets/jsphyg/weather-dataset-rattle-package
@@ -60,12 +67,21 @@ dataset *load_weather()
  */
 
 float *normalize_mnist_images(unsigned char *images, size_t image_size, 
-        size_t n_samples)
+        size_t n_samples, int for_gan)
 {
     float *images_normalized = calloc(image_size * n_samples, sizeof(float));
     for (size_t i = 0; i < (image_size * n_samples); i++)
     {
-        images_normalized[i] = images[i] / 255.0f;
+        if (for_gan)
+        {
+            // -1 to 1 range
+            images_normalized[i] = (images[i] - 127.5f) / 127.5f;
+        }
+        else
+        {
+            // 0 - 1 range
+            images_normalized[i] = images[i] / 255.0f;
+        }
     }
     return images_normalized;
 }
@@ -85,7 +101,7 @@ float *one_hot(unsigned char *labels, size_t n_classes, size_t n_samples)
 }
 
 
-dataset *load_mnist()
+dataset *load_mnist(int for_gan)
 {
     const size_t n_images = 60000;
     const size_t image_size = 28 * 28;
@@ -126,7 +142,7 @@ dataset *load_mnist()
 
     // normalize input values
     float *images_normlaized = normalize_mnist_images(images, image_size,
-            n_images);
+            n_images, for_gan);
     free(images);
 
     float *one_hot_labels = one_hot(labels, 10, n_images);
@@ -134,10 +150,12 @@ dataset *load_mnist()
 
     dataset *ds = malloc(sizeof(dataset));
     ds->x = images_normlaized;
-    ds->y = one_hot_labels;
+    if (!for_gan)
+    {
+        ds->y = one_hot_labels;
+    }
     ds->n_samples = n_images;
     ds->dim = image_size;
     return ds;
 }
-
 

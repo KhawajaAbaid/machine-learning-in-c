@@ -2,6 +2,7 @@
 #include "datasets.h"
 #include <math.h>
 #include "mlp.h"
+#include <stdbool.h>
 
 
 size_t argmax(float *x, const size_t dim)
@@ -215,7 +216,7 @@ void main()
     printf("\t\t==================================\n");
    
     printf("Loading data....\n");
-    dataset *mnist_ds = load_mnist();
+    dataset *mnist_ds = load_mnist(false);
 
     // let's create a 3 layer model
     printf("Creating model....\n");
