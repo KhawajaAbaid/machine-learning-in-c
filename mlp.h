@@ -198,8 +198,8 @@ void accumulate_grad(mlp *accumulated_gradient, mlp* new_gradient)
 }
 
 
-// Divide sum of individual instance gradients by batch size `m` to get avg
-void divide_grad_by_m(mlp *accumulated_gradient, size_t m)
+// Divide sum of individual instance gradients by batch size to get avg
+void divide_grad_by_batch_size(mlp *accumulated_gradient, size_t batch_size)
 {
     for (size_t i = 0; i < accumulated_gradient->n_layers; i++)
     {
@@ -207,9 +207,9 @@ void divide_grad_by_m(mlp *accumulated_gradient, size_t m)
         {
             for (size_t k = 0; k < accumulated_gradient->layers[i]->in_dim; k++)
             {
-                accumulated_gradient->layers[i]->w[j][k] /= (float) m;
+                accumulated_gradient->layers[i]->w[j][k] /= (float) batch_size;
             }
-            accumulated_gradient->layers[i]->b[j] /= (float) m;
+            accumulated_gradient->layers[i]->b[j] /= (float) batch_size;
         }
     }
 }

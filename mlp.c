@@ -150,7 +150,7 @@ struct metrics *train_step(mlp *model, float *x_b, float *y_b,
     }
 
     // Average gradients
-    divide_grad_by_m(accumulated_gradient, batch_size);
+    divide_grad_by_batch_size(accumulated_gradient, batch_size);
 
     grad_and_metrics *results;
     for (size_t i = 0; i < batch_size; i++)
