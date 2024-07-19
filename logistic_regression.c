@@ -122,6 +122,17 @@ static inline void accumulate_gradient(gradient *accum_grad, gradient *new_grad)
 }
 
 
+static inline void divide_grad_by_batch_size(gradient *accum_grad,
+        size_t batch_size)
+{
+    for (size_t i = 0; i < accum_grad->in_dim; i++)
+    {
+        accum_grad->w[i] /= (float) batch_size;
+    }
+    accum_grad->b /= (float) batch_size;
+}
+
+
 static inline void update_weights(model *m, gradient *grad, float learning_rate)
 {
     for (size_t i = 0; i < m->in_dim; i++)
@@ -157,6 +168,8 @@ struct metrics *train_step(model *m, float *x, float *y, float learning_rate,
         free(result->metrics);
     }
     free(result);
+
+    divide_grad_by_batch_size(accum_grad, batch_size);
 
     // Update weights
     update_weights(m, accum_grad, learning_rate);
@@ -219,7 +232,7 @@ void main()
     initialize_weights(1337, logistic_regressor);
     
     printf("Training...\n");
-    fit(logistic_regressor, weather_ds, 0.005f, 512, 300);
+    fit(logistic_regressor, weather_ds, 0.1f, 512, 500);
     
     free(weather_ds->x);
     free(weather_ds->y);
