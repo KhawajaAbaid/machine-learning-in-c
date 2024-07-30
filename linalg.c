@@ -49,6 +49,18 @@ float *vector_scalar_product(float *v, float s, const size_t dim)
 }
 
 
+float *vector_scalar_addition(float *v, float s, const size_t dim)
+{
+    float *result = calloc(dim, sizeof(float));
+    
+    for (size_t i = 0; i < dim; i++)
+    {
+        result[i] = v[i] + s;
+    }
+    return result;
+}
+
+
 float *vector_elementwise_product(float *v1, float *v2, const size_t dim)
 {
     float *result  = calloc(dim, sizeof(float));
