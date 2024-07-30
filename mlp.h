@@ -251,3 +251,31 @@ void init_with_zeros(mlp *model)
     }
 }
 
+
+void initialize_weights_glorot_normal(const unsigned int seed, mlp *model)
+{
+    srand(seed);
+
+    float **w;
+    float *b;
+    layer *l;
+
+    for (size_t i = 0; i < model->n_layers; i++)
+    {   
+        l = model->layers[i];
+        w = (float **) malloc(l->out_dim * sizeof(float *));
+        b = (float *) calloc(l->out_dim, sizeof(float));
+        for (size_t j = 0; j < l->out_dim; j++)
+        {
+            w[j] = (float *)malloc(l->in_dim * sizeof(float));
+
+            for (size_t k = 0; k < l->in_dim; k++)
+            {
+                w[j][k] = glorot_random_normal(l->in_dim, l->out_dim);
+            }
+            b[j] = glorot_random_normal(l->in_dim, l->out_dim);
+        }
+        l->w = w;
+        l->b = b;
+    }
+}
