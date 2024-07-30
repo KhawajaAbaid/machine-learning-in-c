@@ -73,7 +73,8 @@ mlp *copy_mlp(mlp *source)
 }
 
 
-void initialize_weights(const unsigned int seed, mlp *model)
+void initialize_weights(const unsigned int seed, mlp *model,
+        float (*initializer)(void))
 {
     srand(seed);
 
@@ -92,9 +93,9 @@ void initialize_weights(const unsigned int seed, mlp *model)
 
             for (size_t k = 0; k < l->in_dim; k++)
             {
-                w[j][k] = random_normal();
+                w[j][k] = initializer();
             }
-            b[j] = random_normal();
+            b[j] = initializer();
         }
         l->w = w;
         l->b = b;
@@ -249,3 +250,4 @@ void init_with_zeros(mlp *model)
                 sizeof(float));
     }
 }
+

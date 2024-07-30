@@ -213,7 +213,7 @@ void main()
     mlp *model = create_mlp(3, dims);
  
     printf("Initializing weights...\n");
-    initialize_weights(1001, model);
+    initialize_weights(1001, model, random_normal);
 
     printf("Training...\n");
     fit(model, mnist_ds, 0.005f, 512, 10);
