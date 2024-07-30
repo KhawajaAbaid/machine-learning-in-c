@@ -35,3 +35,9 @@ float random_normal()
     return z0;
 }
 
+
+float glorot_random_normal(size_t in_dim, size_t out_dim)
+{
+    float stddev = sqrtf(2.0 / (float) (in_dim + out_dim));
+    return random_normal() * stddev;
+}
