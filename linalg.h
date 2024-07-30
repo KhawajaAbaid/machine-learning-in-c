@@ -23,3 +23,7 @@ float *matrix_vector_dot_product(float **m, float *v, const size_t n_rows,
 float **matmul(float **m1, float **m2, const size_t n_rows_m1,
         const size_t n_cols_m1, const size_t n_cols_m2);
 float **matrix_transpose(float **m, const size_t n_rows, const size_t n_cols);
+float **matrix_scalar_product(float **m, float s, const size_t n_rows,
+        const size_t n_cols);
+float **matrix_scalar_addition(float **m, float s, const size_t n_rows,
+        const size_t n_cols);

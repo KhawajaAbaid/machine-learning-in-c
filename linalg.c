@@ -151,3 +151,26 @@ float **matrix_transpose(float **m, const size_t n_rows, const size_t n_cols)
     return transposed_matrix;
 }
 
+
+float **matrix_scalar_product(float **m, float s, const size_t n_rows,
+        const size_t n_cols)
+{
+    float **result = malloc(n_rows * sizeof(float *));
+    for (size_t i = 0; i < n_rows; i++)
+    {
+        result[i] = vector_scalar_product(m[i], s, n_cols);
+    }
+    return result;
+}
+
+
+float **matrix_scalar_addition(float **m, float s, const size_t n_rows,
+        const size_t n_cols)
+{
+    float **result = malloc(n_rows * sizeof(float *));
+    for (size_t i = 0; i < n_rows; i++)
+    {
+        result[i] = vector_scalar_addition(m[i], s, n_cols);
+    }
+    return result;
+}
