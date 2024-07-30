@@ -229,3 +229,23 @@ void update_weights(mlp *model, mlp* gradient, float learning_rate)
         }
     }
 }
+
+
+void init_with_zeros(mlp *model)
+{
+    // Init accumulated gradient values to zero
+    for (size_t i = 0; i < model->n_layers; i++)
+    {
+        model->layers[i]->w = (float **) malloc(
+                model->layers[i]->out_dim * sizeof(float *));
+        for (size_t j = 0; j < model->layers[i]->out_dim; j++)
+        {
+            model->layers[i]->w[j] = (float *) calloc(
+                    model->layers[i]->in_dim,
+                    sizeof(float));
+        }
+        model->layers[i]->b = (float *) calloc(
+                model->layers[i]->out_dim,
+                sizeof(float));
+    }
+}

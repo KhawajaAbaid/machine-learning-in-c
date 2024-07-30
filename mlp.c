@@ -134,21 +134,7 @@ struct metrics *train_step(mlp *model, float *x_b, float *y_b,
     size_t num_classes = model->layers[model->n_layers - 1]->out_dim;
     mlp *accumulated_gradient = copy_mlp(model);
     // Init accumulated gradient values to zero
-    for (size_t i = 0; i < model->n_layers; i++)
-    {
-        accumulated_gradient->layers[i]->w = malloc(
-                accumulated_gradient->layers[i]->out_dim * sizeof(float *));
-        for (size_t j = 0; j < accumulated_gradient->layers[i]->out_dim; j++)
-        {
-            accumulated_gradient->layers[i]->w[j] = calloc(
-                    accumulated_gradient->layers[i]->in_dim,
-                    sizeof(float));
-        }
-        accumulated_gradient->layers[i]->b = calloc(
-                accumulated_gradient->layers[i]->out_dim,
-                sizeof(float));
-    }
-
+    init_with_zeros(accumulated_gradient);
     // Average gradients
     divide_grad_by_batch_size(accumulated_gradient, batch_size);
 
