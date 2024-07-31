@@ -1,6 +1,6 @@
 CC = gcc
-HEADERS = linalg.h datasets.h random.h
-DEPS = linalg.c datasets.c random.c
+HEADERS = linalg.h datasets.h random.h mlp_common.h
+DEPS = linalg.c datasets.c random.c mlp_common.c
 LIBS = -lm
 
 linear_regression: linear_regression.o
