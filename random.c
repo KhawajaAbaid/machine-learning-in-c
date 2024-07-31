@@ -6,10 +6,10 @@
 
 // Using box-muller method to generate random normal numbers
 // Credits: Wikipedia, ChatGPT and @mallocmyheart
-float random_normal()
+double random_normal()
 {
     static int have_spare = 0;
-    static float z0, z1; 
+    static double z0, z1; 
     double u1, u2; // u1, u2 hold uniform random numbers
     
     if (have_spare)
@@ -30,14 +30,14 @@ float random_normal()
         u2 = random() / (double) RAND_MAX;
     } while (u2 <= DBL_MIN);
 
-    z0 = (float) (sqrt(-2.0 * log(u1)) * cos(2.0 * M_PI * u2));
-    z1 = (float) (sqrt(-2.0 * log(u1)) * sin(2.0 * M_PI * u2));
+    z0 = (sqrt(-2.0 * log(u1)) * cos(2.0 * M_PI * u2));
+    z1 = (sqrt(-2.0 * log(u1)) * sin(2.0 * M_PI * u2));
     return z0;
 }
 
 
-float glorot_random_normal(size_t in_dim, size_t out_dim)
+double glorot_random_normal(size_t in_dim, size_t out_dim)
 {
-    float stddev = sqrtf(2.0 / (float) (in_dim + out_dim));
+    double stddev = sqrt(2.0 / (double) (in_dim + out_dim));
     return random_normal() * stddev;
 }

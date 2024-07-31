@@ -1,14 +1,14 @@
+#include "mlp_common.h"
 #include "linalg.h"
 #include "datasets.h"
 #include <math.h>
-#include "mlp.h"
 #include <stdbool.h>
 
 
-size_t argmax(float *x, const size_t dim)
+size_t argmax(double *x, const size_t dim)
 {
     size_t max_idx = 0;
-    float max = 0.0f;
+    double max = 0.0f;
 
     for (size_t i = 0; i < dim; i++)
     {
@@ -23,18 +23,18 @@ size_t argmax(float *x, const size_t dim)
 
 
 // FOR A SINGLE INSTANCE runs the forward pass computes grads
-grad_and_metrics *backprop(mlp *model, float *x, float *y)
+grad_and_metrics *backprop(mlp *model, double *x, double *y)
 {
     struct metrics *metrics = (struct metrics *) malloc(sizeof(struct metrics *));
     gradient *grad = copy_mlp(model);
     
     // Forward pass
-    float *a; // activations
-    float *z; // logits
-    float *temp;
-    float **z_all = malloc(model->n_layers * sizeof(float *));
-    float **a_all = malloc((model->n_layers + 1) * sizeof(float *));
-    float **dloss_dz_all = malloc(model->n_layers * sizeof(float *));
+    double *a; // activations
+    double *z; // logits
+    double *temp;
+    double **z_all = malloc(model->n_layers * sizeof(double *));
+    double **a_all = malloc((model->n_layers + 1) * sizeof(double *));
+    double **dloss_dz_all = malloc(model->n_layers * sizeof(double *));
 
     // Okay please forgive me for this but in a_all array, i'm reserving the
     // index 0 for inputs. It breaks one to one correspondence with every other
@@ -73,9 +73,9 @@ grad_and_metrics *backprop(mlp *model, float *x, float *y)
     grad->layers[last_layer_index]->b = dloss_dz_all[last_layer_index];
 
     // Now iteratively compute gradients for logits of each layer, backwards
-    float **w_t;
-    float *dloss_da;
-    float *da_dz;
+    double **w_t;
+    double *dloss_da;
+    double *da_dz;
     for (int i = model->n_layers - 2; i >= 0; i--)
     {
         w_t = matrix_transpose(model->layers[i + 1]->w,
@@ -123,8 +123,8 @@ grad_and_metrics *backprop(mlp *model, float *x, float *y)
 }
 
 
-struct metrics *train_step(mlp *model, float *x_b, float *y_b,
-        float learning_rate, const size_t batch_size) 
+struct metrics *train_step(mlp *model, double *x_b, double *y_b,
+        double learning_rate, const size_t batch_size) 
 {
     struct metrics *metrics = (struct metrics *) malloc(sizeof(struct metrics));
     metrics->loss = 0.0f;
@@ -159,7 +159,7 @@ struct metrics *train_step(mlp *model, float *x_b, float *y_b,
 }
 
 
-void fit(mlp *model, dataset *ds, float learning_rate, const size_t batch_size,
+void fit(mlp *model, dataset *ds, double learning_rate, const size_t batch_size,
         const size_t n_epochs)
 {
     size_t n_batches = ds->n_samples / batch_size;   // ignore the `remainder` samples 

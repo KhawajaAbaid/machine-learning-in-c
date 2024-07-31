@@ -1,9 +1,9 @@
 #include "linalg.h"
 
 
-float *vector_addition(float *v1, float *v2, const size_t dim)
+double *vector_addition(double *v1, double *v2, const size_t dim)
 {
-    float *result = calloc(dim, sizeof(float));
+    double *result = calloc(dim, sizeof(double));
 
     for (size_t i = 0; i < dim; i++)
     {
@@ -13,9 +13,9 @@ float *vector_addition(float *v1, float *v2, const size_t dim)
 }
 
 
-float *vector_subtraction(float *v1, float *v2, const size_t dim)
+double *vector_subtraction(double *v1, double *v2, const size_t dim)
 {
-    float *result = calloc(dim, sizeof(float));
+    double *result = calloc(dim, sizeof(double));
     
     for (size_t i = 0; i < dim; i++)
     {
@@ -25,9 +25,9 @@ float *vector_subtraction(float *v1, float *v2, const size_t dim)
 }
 
 
-float vector_sum(float *v, const size_t dim)
+double vector_sum(double *v, const size_t dim)
 {
-    float sum = 0.0f;
+    double sum = 0.0;
 
     for (size_t i = 0; i < dim; i++)
     {
@@ -37,9 +37,9 @@ float vector_sum(float *v, const size_t dim)
 }
 
 
-float *vector_scalar_product(float *v, float s, const size_t dim)
+double *vector_scalar_product(double *v, double s, const size_t dim)
 {
-    float *result = calloc(dim, sizeof(float));
+    double *result = calloc(dim, sizeof(double));
     
     for (size_t i = 0; i < dim; i++)
     {
@@ -49,9 +49,9 @@ float *vector_scalar_product(float *v, float s, const size_t dim)
 }
 
 
-float *vector_scalar_addition(float *v, float s, const size_t dim)
+double *vector_scalar_addition(double *v, double s, const size_t dim)
 {
-    float *result = calloc(dim, sizeof(float));
+    double *result = calloc(dim, sizeof(double));
     
     for (size_t i = 0; i < dim; i++)
     {
@@ -61,9 +61,9 @@ float *vector_scalar_addition(float *v, float s, const size_t dim)
 }
 
 
-float *vector_elementwise_product(float *v1, float *v2, const size_t dim)
+double *vector_elementwise_product(double *v1, double *v2, const size_t dim)
 {
-    float *result  = calloc(dim, sizeof(float));
+    double *result  = calloc(dim, sizeof(double));
     for (size_t i = 0; i < dim; i++)
     {
         result[i] = v1[i] * v2[i];
@@ -72,9 +72,9 @@ float *vector_elementwise_product(float *v1, float *v2, const size_t dim)
 }
 
 
-float vector_dot_product(float *v1, float *v2, const size_t dim)
+double vector_dot_product(double *v1, double *v2, const size_t dim)
 {
-    float result = 0.0f;
+    double result = 0.0;
     for (size_t i = 0; i < dim; i++)
     {
         result += v1[i] * v2[i];
@@ -83,14 +83,14 @@ float vector_dot_product(float *v1, float *v2, const size_t dim)
 }
 
 
-float **vector_outer_product(float *col, float *row, const size_t col_dim,
+double **vector_outer_product(double *col, double *row, const size_t col_dim,
         const size_t row_dim)
 {
-    float **matrix = malloc(col_dim * sizeof(float *));
+    double **matrix = malloc(col_dim * sizeof(double *));
 
     for (size_t i = 0; i < col_dim; i++)
     {
-        matrix[i] = calloc(row_dim, sizeof(float));
+        matrix[i] = calloc(row_dim, sizeof(double));
         for (size_t j = 0; j < row_dim; j++)
         {
             matrix[i][j] = col[i] * row[j];
@@ -100,10 +100,10 @@ float **vector_outer_product(float *col, float *row, const size_t col_dim,
 }
 
 
-float *matrix_vector_dot_product(float **m, float *v, const size_t n_rows, 
+double *matrix_vector_dot_product(double **m, double *v, const size_t n_rows, 
         const size_t n_cols)
 {
-    float *result = calloc(n_rows, sizeof(float));
+    double *result = calloc(n_rows, sizeof(double));
 
     for (size_t r = 0; r < n_rows; r++)
     {
@@ -116,15 +116,15 @@ float *matrix_vector_dot_product(float **m, float *v, const size_t n_rows,
 }
 
 
-float **matmul(float **m1, float **m2, const size_t n_rows_m1,
+double **matmul(double **m1, double **m2, const size_t n_rows_m1,
         const size_t n_cols_m1, const size_t n_cols_m2)
 {
-    float **result;
-    result = malloc(n_rows_m1 * sizeof(float *));
+    double **result;
+    result = malloc(n_rows_m1 * sizeof(double *));
 
     for (size_t i = 0; i < n_rows_m1; i++)
     {
-        result[i] = calloc(n_cols_m2, sizeof(float));
+        result[i] = calloc(n_cols_m2, sizeof(double));
         for (size_t j = 0; j < n_cols_m1; j++)
         {
             for (size_t k = 0; k < n_cols_m2; k++)
@@ -137,12 +137,12 @@ float **matmul(float **m1, float **m2, const size_t n_rows_m1,
 }
 
 
-float **matrix_transpose(float **m, const size_t n_rows, const size_t n_cols)
+double **matrix_transpose(double **m, const size_t n_rows, const size_t n_cols)
 {
-    float **transposed_matrix = malloc(n_cols * sizeof(float *));
+    double **transposed_matrix = malloc(n_cols * sizeof(double *));
     for (size_t i = 0; i < n_cols; i++)
     {
-        transposed_matrix[i] = calloc(n_rows, sizeof(float));
+        transposed_matrix[i] = calloc(n_rows, sizeof(double));
         for (size_t j = 0; j < n_rows; j++)
         {
             transposed_matrix[i][j] = m[j][i];
@@ -152,10 +152,10 @@ float **matrix_transpose(float **m, const size_t n_rows, const size_t n_cols)
 }
 
 
-float **matrix_scalar_product(float **m, float s, const size_t n_rows,
+double **matrix_scalar_product(double **m, double s, const size_t n_rows,
         const size_t n_cols)
 {
-    float **result = malloc(n_rows * sizeof(float *));
+    double **result = malloc(n_rows * sizeof(double *));
     for (size_t i = 0; i < n_rows; i++)
     {
         result[i] = vector_scalar_product(m[i], s, n_cols);
@@ -164,10 +164,10 @@ float **matrix_scalar_product(float **m, float s, const size_t n_rows,
 }
 
 
-float **matrix_scalar_addition(float **m, float s, const size_t n_rows,
+double **matrix_scalar_addition(double **m, double s, const size_t n_rows,
         const size_t n_cols)
 {
-    float **result = malloc(n_rows * sizeof(float *));
+    double **result = malloc(n_rows * sizeof(double *));
     for (size_t i = 0; i < n_rows; i++)
     {
         result[i] = vector_scalar_addition(m[i], s, n_cols);

@@ -8,8 +8,8 @@
 
 typedef struct
 {
-    float **w;
-    float *b;
+    double **w;
+    double *b;
     size_t in_dim;
     size_t out_dim;
 } layer;
@@ -26,8 +26,8 @@ typedef mlp gradient;
 
 struct metrics
 {
-    float loss;
-    float accuracy;
+    double loss;
+    double accuracy;
 };
 
 typedef struct
@@ -40,9 +40,9 @@ typedef struct
 mlp *create_mlp(const size_t n_layers, const size_t *dims);
 mlp *copy_mlp(mlp *source);
 void initialize_weights(const unsigned int seed, mlp *model,
-        float (*initializer)(void));
+        double (*initializer)(void));
 
-static inline void free_2d_matrix(float **m, const size_t n_rows)
+static inline void free_2d_matrix(double **m, const size_t n_rows)
 {
     for (size_t i = 0; i < n_rows; i++)
     {
@@ -85,11 +85,11 @@ static inline void free_grad_and_metrics(grad_and_metrics *gam)
 }
 
 
-float *sigmoid(float *x, const size_t dim);
-float *sigmoid_prime(float *x, const size_t dim);
-float crossentropy_loss(float *y, float *y_pred, const size_t dim);
+double *sigmoid(double *x, const size_t dim);
+double *sigmoid_prime(double *x, const size_t dim);
+double crossentropy_loss(double *y, double *y_pred, const size_t dim);
 void accumulate_grad(mlp *accumulated_gradient, mlp* new_gradient);
 void divide_grad_by_batch_size(mlp *accumulated_gradient, size_t batch_size);
-void update_weights(mlp *model, mlp* gradient, float learning_rate);
+void update_weights(mlp *model, mlp* gradient, double learning_rate);
 void init_with_zeros(mlp *model);
 void initialize_weights_glorot_normal(const unsigned int seed, mlp *model);

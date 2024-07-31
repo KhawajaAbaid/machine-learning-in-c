@@ -38,22 +38,22 @@ mlp *copy_mlp(mlp *source)
 
 
 void initialize_weights(const unsigned int seed, mlp *model,
-        float (*initializer)(void))
+        double (*initializer)(void))
 {
     srand(seed);
 
-    float **w;
-    float *b;
+    double **w;
+    double *b;
     layer *l;
 
     for (size_t i = 0; i < model->n_layers; i++)
     {   
         l = model->layers[i];
-        w = (float **) malloc(l->out_dim * sizeof(float *));
-        b = (float *) calloc(l->out_dim, sizeof(float));
+        w = (double **) malloc(l->out_dim * sizeof(double *));
+        b = (double *) calloc(l->out_dim, sizeof(double));
         for (size_t j = 0; j < l->out_dim; j++)
         {
-            w[j] = (float *)malloc(l->in_dim * sizeof(float));
+            w[j] = (double *)malloc(l->in_dim * sizeof(double));
 
             for (size_t k = 0; k < l->in_dim; k++)
             {
@@ -66,33 +66,33 @@ void initialize_weights(const unsigned int seed, mlp *model,
     }
 }
 
-float *sigmoid(float *x, const size_t dim)
+double *sigmoid(double *x, const size_t dim)
 {
-    float *result = (float *) calloc(dim, sizeof(float));
+    double *result = (double *) calloc(dim, sizeof(double));
     for (size_t i = 0; i < dim; i++)
     {
-        result[i] = 1.0f / (1.0f + expf(-x[i]));
+        result[i] = 1.0 / (1.0 + exp(-x[i]));
     }
     return result;
 }
 
 
-float *sigmoid_prime(float *x, const size_t dim)
+double *sigmoid_prime(double *x, const size_t dim)
 {
-    float *result = (float *) malloc(dim * sizeof(float));
+    double *result = (double *) malloc(dim * sizeof(double));
 
-    float *sig = sigmoid(x, dim);
+    double *sig = sigmoid(x, dim);
     for (size_t i = 0; i < dim; i++)
     {
-        result[i] = sig[i] * (1.0f - sig[i]); 
+        result[i] = sig[i] * (1.0 - sig[i]); 
     }
     return result;
 }
 
 
-float crossentropy_loss(float *y, float *y_pred, const size_t dim)
+double crossentropy_loss(double *y, double *y_pred, const size_t dim)
 {
-    float loss = 0.0f;
+    double loss = 0.0;
 
     for (size_t i = 0; i < dim; i++)
     {
@@ -128,15 +128,15 @@ void divide_grad_by_batch_size(mlp *accumulated_gradient, size_t batch_size)
         {
             for (size_t k = 0; k < accumulated_gradient->layers[i]->in_dim; k++)
             {
-                accumulated_gradient->layers[i]->w[j][k] /= (float) batch_size;
+                accumulated_gradient->layers[i]->w[j][k] /= (double) batch_size;
             }
-            accumulated_gradient->layers[i]->b[j] /= (float) batch_size;
+            accumulated_gradient->layers[i]->b[j] /= (double) batch_size;
         }
     }
 }
 
 
-void update_weights(mlp *model, mlp* gradient, float learning_rate)
+void update_weights(mlp *model, mlp* gradient, double learning_rate)
 {
     for (size_t i = 0; i < model->n_layers; i++)
     {
@@ -157,17 +157,17 @@ void init_with_zeros(mlp *model)
     // Init accumulated gradient values to zero
     for (size_t i = 0; i < model->n_layers; i++)
     {
-        model->layers[i]->w = (float **) malloc(
-                model->layers[i]->out_dim * sizeof(float *));
+        model->layers[i]->w = (double **) malloc(
+                model->layers[i]->out_dim * sizeof(double *));
         for (size_t j = 0; j < model->layers[i]->out_dim; j++)
         {
-            model->layers[i]->w[j] = (float *) calloc(
+            model->layers[i]->w[j] = (double *) calloc(
                     model->layers[i]->in_dim,
-                    sizeof(float));
+                    sizeof(double));
         }
-        model->layers[i]->b = (float *) calloc(
+        model->layers[i]->b = (double *) calloc(
                 model->layers[i]->out_dim,
-                sizeof(float));
+                sizeof(double));
     }
 }
 
@@ -176,18 +176,18 @@ void initialize_weights_glorot_normal(const unsigned int seed, mlp *model)
 {
     srand(seed);
 
-    float **w;
-    float *b;
+    double **w;
+    double *b;
     layer *l;
 
     for (size_t i = 0; i < model->n_layers; i++)
     {   
         l = model->layers[i];
-        w = (float **) malloc(l->out_dim * sizeof(float *));
-        b = (float *) calloc(l->out_dim, sizeof(float));
+        w = (double **) malloc(l->out_dim * sizeof(double *));
+        b = (double *) calloc(l->out_dim, sizeof(double));
         for (size_t j = 0; j < l->out_dim; j++)
         {
-            w[j] = (float *)malloc(l->in_dim * sizeof(float));
+            w[j] = (double *)malloc(l->in_dim * sizeof(double));
 
             for (size_t k = 0; k < l->in_dim; k++)
             {

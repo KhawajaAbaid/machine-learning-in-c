@@ -18,8 +18,8 @@ dataset *load_weather()
     const size_t n_samples = 24800;
     const size_t n_features = 22;
 
-    float *x = (float *) malloc(n_samples * n_features * sizeof(float));
-    float *y = (float *) malloc(n_samples * sizeof(float));
+    double *x = (double *) malloc(n_samples * n_features * sizeof(double));
+    double *y = (double *) malloc(n_samples * sizeof(double));
     size_t ret;
     FILE *fp;
     fp = fopen("./datasets/weather_aus_x.bin", "rb");
@@ -28,7 +28,7 @@ dataset *load_weather()
         printf("Error: Failed to load weather_aus_x.bin\n");
         exit(EXIT_FAILURE);
     }
-    ret = fread(x, sizeof(float), n_samples * n_features, fp);
+    ret = fread(x, sizeof(double), n_samples * n_features, fp);
     fclose(fp); 
     if (ret != n_samples * n_features)
     {
@@ -42,7 +42,7 @@ dataset *load_weather()
         printf("Error: Failed to load weather_aus_y.bin\n");
         exit(EXIT_FAILURE);
     }
-    ret = fread(y, sizeof(float), n_samples, fp);
+    ret = fread(y, sizeof(double), n_samples, fp);
     fclose(fp);
     if (ret != n_samples)
     {
@@ -66,10 +66,10 @@ dataset *load_weather()
  * Then preprocess it to 1. Normalize images 2. One hot labels
  */
 
-float *normalize_mnist_images(unsigned char *images, size_t image_size, 
+double *normalize_mnist_images(unsigned char *images, size_t image_size, 
         size_t n_samples, int for_gan)
 {
-    float *images_normalized = calloc(image_size * n_samples, sizeof(float));
+    double *images_normalized = calloc(image_size * n_samples, sizeof(double));
     for (size_t i = 0; i < (image_size * n_samples); i++)
     {
         if (for_gan)
@@ -87,9 +87,9 @@ float *normalize_mnist_images(unsigned char *images, size_t image_size,
 }
 
 
-float *one_hot(unsigned char *labels, size_t n_classes, size_t n_samples)
+double *one_hot(unsigned char *labels, size_t n_classes, size_t n_samples)
 {
-    float *one_hot_labels = calloc(n_samples * n_classes, sizeof(float));
+    double *one_hot_labels = calloc(n_samples * n_classes, sizeof(double));
     size_t label;
     for (size_t i = 0; i < n_samples; i++)
     {
@@ -141,11 +141,11 @@ dataset *load_mnist(int for_gan)
     fclose(fp);
 
     // normalize input values
-    float *images_normlaized = normalize_mnist_images(images, image_size,
+    double *images_normlaized = normalize_mnist_images(images, image_size,
             n_images, for_gan);
     free(images);
 
-    float *one_hot_labels = one_hot(labels, 10, n_images);
+    double *one_hot_labels = one_hot(labels, 10, n_images);
     free(labels);
 
     dataset *ds = malloc(sizeof(dataset));
