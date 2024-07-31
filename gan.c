@@ -357,7 +357,9 @@ grad_and_metrics *generator_backprop(mlp *generator, mlp *discriminator,
     // We only need the gradient for the generator but we have to work backward
     // throught the discriminator first.
     // We won't store any intermediate values, rather we're only concerned with
-    // the last dloss_dz value of the discriminator
+    // the gradient of discriminator's loss w.r.t. the logits of its input 
+    // layer as those logits are based on the output activations of the
+    // generator (i.e. the fake image).
     size_t last_layer_index = discriminator->n_layers - 1;
     double *disc_dloss_dz_last = vector_subtraction(
             disc_a_all[last_layer_index + 1], &y, 1);
