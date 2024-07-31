@@ -316,7 +316,7 @@ grad_and_metrics *discriminator_backprop(mlp *discriminator, double *x, double y
     {
         free(z_all[i]);
         // activations contains 1 more elem than z
-        // and 0th index posize_ts to inputs which we don't want to free yet
+        // and 0th index points to inputs which we don't want to free (yet)
         free(a_all[i + 1]);
     }
     free(z_all);
@@ -627,7 +627,7 @@ void fit(mlp *generator, mlp *discriminator, dataset *ds, double learning_rate,
                         epoch, batch);
                 generate_and_save_image(generator, filename);
             }
-            // 4. Prsize_t logs
+            // 4. Print logs
             printf("\rEpoch %-4ld | Batch %-4ld | Gen Loss: %-8.5f | Disc Loss: %-8.5f | Disc Acc: %-8.5f",
                     epoch, batch, gen_batch_metrics->loss,
                     disc_batch_metrics->loss, disc_batch_metrics->accuracy);
