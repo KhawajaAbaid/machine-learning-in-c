@@ -21,6 +21,7 @@ The currently available architecture names are as follow:
 1. linear_regression
 2. logistic_regression
 3. mlp
+4. gan
 
 
 I'm working on building more advanced architectures from sctrach. So stay tuned! 👀
