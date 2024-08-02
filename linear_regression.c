@@ -9,36 +9,36 @@
 
 typedef struct 
 {
-    float w;
-    float b;
+    double w;
+    double b;
 } regressor;
 
 
 typedef struct
 {
-    float *x;
-    float *y;
+    double *x;
+    double *y;
     size_t n_samples;
 } dataset;
 
 
-void initialize_weights(unsigned int seed, regressor *reg)
+void initialize_weights_(unsigned int seed, regressor *reg)
 {
     srand(seed);
-    reg->w = (float) (rand() % 10);
-    reg->b = (float) (rand() % 10);
+    reg->w = (double) (rand() % 10);
+    reg->b = (double) (rand() % 10);
 }
 
 
-float square(float x)
+double square(double x)
 {
     return x * x;
 }
 
 
-float mse(float *y, float *y_pred, const size_t dim)
+double mse(double *y, double *y_pred, const size_t dim)
 {
-    float loss = 0.0f;
+    double loss = 0.0f;
     for (size_t i = 0; i < dim; i++)
     {
         loss += square(y[i] - y_pred[i]) / 2.0f;
@@ -48,9 +48,9 @@ float mse(float *y, float *y_pred, const size_t dim)
 }
 
 
-float *forward(regressor *reg, dataset *data)
+double *forward(regressor *reg, dataset *data)
 {
-    float *y_pred = calloc(data->n_samples, sizeof(float));
+    double *y_pred = calloc(data->n_samples, sizeof(double));
 
     for (size_t i = 0; i < data->n_samples; i++)
     {
@@ -60,18 +60,18 @@ float *forward(regressor *reg, dataset *data)
 }
 
 // Gradient of weights and bias w.r.t. loss
-regressor *grad(float *x, float *y, float *y_pred, const size_t n_samples)
+regressor *grad(double *x, double *y, double *y_pred, const size_t n_samples)
 {
-    float *dloss_dypred = vector_subtraction(y_pred, y, n_samples);
-    float *dypred_dw = x;
-    float *dloss_dw = vector_elementwise_product(dloss_dypred, dypred_dw,
+    double *dloss_dypred = vector_subtraction(y_pred, y, n_samples);
+    double *dypred_dw = x;
+    double *dloss_dw = vector_elementwise_product(dloss_dypred, dypred_dw,
             n_samples);
     // The dloss_dw vector contains gradient for each input instance.
     // We need to sum it all.
-    float dloss_dw_total = vector_sum(dloss_dw, n_samples);
+    double dloss_dw_total = vector_sum(dloss_dw, n_samples);
     
-    float *dloss_db = dloss_dypred;
-    float dloss_db_total = vector_sum(dloss_db, n_samples);
+    double *dloss_db = dloss_dypred;
+    double dloss_db_total = vector_sum(dloss_db, n_samples);
 
     free(dloss_dw);
     free(dloss_db);
@@ -83,35 +83,35 @@ regressor *grad(float *x, float *y, float *y_pred, const size_t n_samples)
     return gradient;
 }
 
-static inline void update_weights(regressor *reg, regressor *gradient,
-        float learning_rate)
+static inline void update_weights_(regressor *reg, regressor *gradient,
+        double learning_rate)
 {
     reg->w -= learning_rate * gradient->w;
     reg->b -= learning_rate * gradient->b;
 }
 
 
-float train_step(regressor *reg, dataset *data, float learning_rate)
+double train_step(regressor *reg, dataset *data, double learning_rate)
 {
     // Run forward pass
-    float *y_pred = forward(reg, data);
+    double *y_pred = forward(reg, data);
     
     // Compute loss
-    float loss = mse(data->y, y_pred, data->n_samples);
+    double loss = mse(data->y, y_pred, data->n_samples);
 
     // Compute gradient w.r.t. loss
     regressor *gradient = grad(data->x, data->y, y_pred, data->n_samples);
     
     // Update weights
-    update_weights(reg, gradient, learning_rate);
+    update_weights_(reg, gradient, learning_rate);
 
     return loss;
 }
 
 
-void fit(regressor *reg, dataset *data, float learning_rate, const size_t n_epochs)
+void fit(regressor *reg, dataset *data, double learning_rate, const size_t n_epochs)
 {
-    float loss;
+    double loss;
 
     for (size_t i = 0; i < n_epochs; i++)
     {
@@ -127,12 +127,12 @@ dataset *generate_input_data(unsigned int seed, const size_t n_samples)
 {
     srand(seed);
     
-    float *x = calloc(n_samples, sizeof(float));
-    float *y = calloc(n_samples, sizeof(float));
+    double *x = calloc(n_samples, sizeof(double));
+    double *y = calloc(n_samples, sizeof(double));
 
     for (size_t i = 0; i < n_samples; i++)
     {
-        x[i] = (float) rand() / (float) RAND_MAX;
+        x[i] = (double) rand() / (double) RAND_MAX;
         y[i] = x[i] * 5.0f + 10.0f;
     }
 
@@ -149,8 +149,8 @@ void main()
 {
     dataset *data = generate_input_data(1337, 256);
     regressor *reg = malloc(sizeof(regressor));
-    initialize_weights(999, reg);
-    float learning_rate = 0.001f;
+    initialize_weights_(999, reg);
+    double learning_rate = 0.001f;
 
     fit(reg, data, learning_rate, 100);
 }

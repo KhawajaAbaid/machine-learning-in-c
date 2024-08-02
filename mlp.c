@@ -134,16 +134,16 @@ struct metrics *train_step(mlp *model, double *x_b, double *y_b,
     size_t num_classes = model->layers[model->n_layers - 1]->out_dim;
     mlp *accumulated_gradient = copy_mlp(model);
     // Init accumulated gradient values to zero
-    init_with_zeros(accumulated_gradient);
+    initialize_mlp_zeros_(accumulated_gradient);
     // Average gradients
-    divide_grad_by_batch_size(accumulated_gradient, batch_size);
+    divide_grad_by_batch_size_(accumulated_gradient, batch_size);
 
     grad_and_metrics *results;
     for (size_t i = 0; i < batch_size; i++)
     {
         results = backprop(model, x_b + (i * image_dims),
                 y_b + (i * num_classes));
-        accumulate_grad(accumulated_gradient, results->grad);
+        accumulate_grad_(accumulated_gradient, results->grad);
         metrics->loss += results->metrics->loss;
         metrics->accuracy += results->metrics->accuracy;
         free_grad_and_metrics(results);
@@ -153,7 +153,7 @@ struct metrics *train_step(mlp *model, double *x_b, double *y_b,
     metrics->loss /= batch_size; // Average loss
     metrics->accuracy /= batch_size;
     
-    update_weights(model, accumulated_gradient, learning_rate);
+    update_weights_(model, accumulated_gradient, learning_rate);
     free_mlp(accumulated_gradient);
     return metrics;
 }
@@ -213,7 +213,7 @@ void main()
     mlp *model = create_mlp(3, dims);
  
     printf("Initializing weights...\n");
-    initialize_weights(1001, model, random_normal);
+    initialize_mlp_normal_(1001, model);
 
     printf("Training...\n");
     fit(model, mnist_ds, 0.005f, 512, 10);
