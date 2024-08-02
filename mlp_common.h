@@ -39,8 +39,6 @@ typedef struct
 
 mlp *create_mlp(const size_t n_layers, const size_t *dims);
 mlp *copy_mlp(mlp *source);
-void initialize_weights(const unsigned int seed, mlp *model,
-        double (*initializer)(void));
 
 static inline void free_2d_matrix(double **m, const size_t n_rows)
 {
@@ -88,8 +86,11 @@ static inline void free_grad_and_metrics(grad_and_metrics *gam)
 double *sigmoid(double *x, const size_t dim);
 double *sigmoid_prime(double *x, const size_t dim);
 double crossentropy_loss(double *y, double *y_pred, const size_t dim);
-void accumulate_grad(mlp *accumulated_gradient, mlp* new_gradient);
-void divide_grad_by_batch_size(mlp *accumulated_gradient, size_t batch_size);
-void update_weights(mlp *model, mlp* gradient, double learning_rate);
-void init_with_zeros(mlp *model);
-void initialize_weights_glorot_normal(const unsigned int seed, mlp *model);
+
+void accumulate_grad_(mlp *accumulated_gradient, mlp* new_gradient);
+void divide_grad_by_batch_size_(mlp *accumulated_gradient, size_t batch_size);
+void update_weights_(mlp *model, mlp* gradient, double learning_rate);
+
+void initialize_mlp_zeros_(mlp *model);
+void initialize_mlp_normal_(const unsigned int seed, mlp *model);
+void initialize_mlp_glorot_normal_(const unsigned int seed, mlp *model);

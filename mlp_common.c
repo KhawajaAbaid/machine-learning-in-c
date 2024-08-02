@@ -1,4 +1,5 @@
 #include "mlp_common.h"
+#include "random.h"
 
 
 // In our model, there's no standalone "input" layer.
@@ -37,35 +38,6 @@ mlp *copy_mlp(mlp *source)
 }
 
 
-void initialize_weights(const unsigned int seed, mlp *model,
-        double (*initializer)(void))
-{
-    srand(seed);
-
-    double **w;
-    double *b;
-    layer *l;
-
-    for (size_t i = 0; i < model->n_layers; i++)
-    {   
-        l = model->layers[i];
-        w = (double **) malloc(l->out_dim * sizeof(double *));
-        b = (double *) calloc(l->out_dim, sizeof(double));
-        for (size_t j = 0; j < l->out_dim; j++)
-        {
-            w[j] = (double *)malloc(l->in_dim * sizeof(double));
-
-            for (size_t k = 0; k < l->in_dim; k++)
-            {
-                w[j][k] = initializer();
-            }
-            b[j] = initializer();
-        }
-        l->w = w;
-        l->b = b;
-    }
-}
-
 double *sigmoid(double *x, const size_t dim)
 {
     double *result = (double *) calloc(dim, sizeof(double));
@@ -102,8 +74,7 @@ double crossentropy_loss(double *y, double *y_pred, const size_t dim)
 }
 
 
-
-void accumulate_grad(mlp *accumulated_gradient, mlp* new_gradient)
+void accumulate_grad_(mlp *accumulated_gradient, mlp* new_gradient)
 {
     for (size_t i = 0; i < accumulated_gradient->n_layers; i++)
     {
@@ -120,7 +91,7 @@ void accumulate_grad(mlp *accumulated_gradient, mlp* new_gradient)
 
 
 // Divide sum of individual instance gradients by batch size to get avg
-void divide_grad_by_batch_size(mlp *accumulated_gradient, size_t batch_size)
+void divide_grad_by_batch_size_(mlp *accumulated_gradient, size_t batch_size)
 {
     for (size_t i = 0; i < accumulated_gradient->n_layers; i++)
     {
@@ -136,7 +107,7 @@ void divide_grad_by_batch_size(mlp *accumulated_gradient, size_t batch_size)
 }
 
 
-void update_weights(mlp *model, mlp* gradient, double learning_rate)
+void update_weights_(mlp *model, mlp* gradient, double learning_rate)
 {
     for (size_t i = 0; i < model->n_layers; i++)
     {
@@ -152,7 +123,7 @@ void update_weights(mlp *model, mlp* gradient, double learning_rate)
 }
 
 
-void init_with_zeros(mlp *model)
+void initialize_mlp_zeros_(mlp *model)
 {
     // Init accumulated gradient values to zero
     for (size_t i = 0; i < model->n_layers; i++)
@@ -172,7 +143,37 @@ void init_with_zeros(mlp *model)
 }
 
 
-void initialize_weights_glorot_normal(const unsigned int seed, mlp *model)
+
+void initialize_mlp_normal_(const unsigned int seed, mlp *model)
+{
+    srand(seed);
+
+    double **w;
+    double *b;
+    layer *l;
+
+    for (size_t i = 0; i < model->n_layers; i++)
+    {   
+        l = model->layers[i];
+        w = (double **) malloc(l->out_dim * sizeof(double *));
+        b = (double *) calloc(l->out_dim, sizeof(double));
+        for (size_t j = 0; j < l->out_dim; j++)
+        {
+            w[j] = (double *)malloc(l->in_dim * sizeof(double));
+
+            for (size_t k = 0; k < l->in_dim; k++)
+            {
+                w[j][k] = random_normal();
+            }
+            b[j] = random_normal();
+        }
+        l->w = w;
+        l->b = b;
+    }
+}
+
+
+void initialize_mlp_glorot_normal_(const unsigned int seed, mlp *model)
 {
     srand(seed);
 

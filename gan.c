@@ -477,7 +477,7 @@ struct metrics *discriminator_train_step(mlp *discriminator,
     size_t image_dim = discriminator->layers[0]->in_dim;
 
     mlp *accumulated_gradient = copy_mlp(discriminator);
-    init_with_zeros(accumulated_gradient);
+    initialize_mlp_zeros_(accumulated_gradient);
 
     // Train on real images
     grad_and_metrics *results; 
@@ -485,7 +485,7 @@ struct metrics *discriminator_train_step(mlp *discriminator,
     {
         results = discriminator_backprop(discriminator, x + (i * image_dim),
                 1.0f);
-        accumulate_grad(accumulated_gradient, results->grad);
+        accumulate_grad_(accumulated_gradient, results->grad);
         metrics->loss += results->metrics->loss;
         metrics->accuracy += results->metrics->accuracy;
         free_grad_and_metrics(results);
@@ -501,17 +501,17 @@ struct metrics *discriminator_train_step(mlp *discriminator,
         free(noise);
         results = discriminator_backprop(discriminator, fake_image, 0.0);
         free(fake_image);
-        accumulate_grad(accumulated_gradient, results->grad);
+        accumulate_grad_(accumulated_gradient, results->grad);
         metrics->loss += results->metrics->loss;
         metrics->accuracy += results->metrics->accuracy;
         free_grad_and_metrics(results);
     }
 
-    divide_grad_by_batch_size(accumulated_gradient, batch_size);
+    divide_grad_by_batch_size_(accumulated_gradient, batch_size);
     metrics->loss /= batch_size; // Average loss
     metrics->accuracy /= batch_size * 2;
     
-    update_weights(discriminator, accumulated_gradient, learning_rate);
+    update_weights_(discriminator, accumulated_gradient, learning_rate);
     free_gradient(accumulated_gradient);
     return metrics;
 }
@@ -528,7 +528,7 @@ struct metrics *generator_train_step(mlp *generator, mlp *discriminator,
 
     mlp *accumulated_gradient = copy_mlp(generator);
     // Init accumulated gradient values to zero
-    init_with_zeros(accumulated_gradient);
+    initialize_mlp_zeros_(accumulated_gradient);
 
     double *noise;
     grad_and_metrics *results;
@@ -536,14 +536,14 @@ struct metrics *generator_train_step(mlp *generator, mlp *discriminator,
     {
         noise = sample_noise(time(NULL) + i * (i + 1), latent_dim);
         results = generator_backprop(generator, discriminator, noise);
-        accumulate_grad(accumulated_gradient, results->grad);
+        accumulate_grad_(accumulated_gradient, results->grad);
         metrics->loss += results->metrics->loss;
         free_grad_and_metrics(results);
     }
-    divide_grad_by_batch_size(accumulated_gradient, batch_size);
+    divide_grad_by_batch_size_(accumulated_gradient, batch_size);
     metrics->loss /= batch_size;
 
-    update_weights(generator, accumulated_gradient, learning_rate);
+    update_weights_(generator, accumulated_gradient, learning_rate);
     free_gradient(accumulated_gradient);
     return metrics;
 }
@@ -659,7 +659,7 @@ void main()
     mlp *generator = create_mlp(num_layers, generator_dims);
     
     printf("Initializing weights...\n");
-    initialize_weights_glorot_normal(8888, generator);
+    initialize_mlp_glorot_normal_(8888, generator);
 
     size_t discriminator_dims[4] = {784, 256, 128, 1};
     
@@ -668,7 +668,7 @@ void main()
     mlp *discriminator = create_mlp(num_layers, discriminator_dims);
     
     printf("Initializing weights...\n");
-    initialize_weights_glorot_normal(7564, discriminator);
+    initialize_mlp_glorot_normal_(7564, discriminator);
     
     printf("Loading mnist dataset...\n");
     dataset *mnist_ds = load_mnist(true);
