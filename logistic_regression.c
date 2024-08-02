@@ -51,7 +51,7 @@ static inline void free_grad_and_metrics(grad_and_metrics *gam)
 }
 
 
-void initialize_weights(const unsigned int seed, model *m)
+void initialize_weights_(const unsigned int seed, model *m)
 {
     srand(seed);
     
@@ -112,7 +112,7 @@ grad_and_metrics *backprop(model *m, float *x, float y)
 }
 
 
-static inline void accumulate_gradient(gradient *accum_grad, gradient *new_grad)
+static inline void accumulate_gradient_(gradient *accum_grad, gradient *new_grad)
 {
     for (size_t i = 0; i < accum_grad->in_dim; i++)
     {
@@ -122,7 +122,7 @@ static inline void accumulate_gradient(gradient *accum_grad, gradient *new_grad)
 }
 
 
-static inline void divide_grad_by_batch_size(gradient *accum_grad,
+static inline void divide_grad_by_batch_size_(gradient *accum_grad,
         size_t batch_size)
 {
     for (size_t i = 0; i < accum_grad->in_dim; i++)
@@ -133,7 +133,7 @@ static inline void divide_grad_by_batch_size(gradient *accum_grad,
 }
 
 
-static inline void update_weights(model *m, gradient *grad, float learning_rate)
+static inline void update_weights_(model *m, gradient *grad, float learning_rate)
 {
     for (size_t i = 0; i < m->in_dim; i++)
     {
@@ -161,7 +161,7 @@ struct metrics *train_step(model *m, float *x, float *y, float learning_rate,
     for (int i = 0; i < batch_size; i++)
     {
         result = backprop(m, x + (i * m->in_dim), y[i]);
-        accumulate_gradient(accum_grad, result->grad);
+        accumulate_gradient_(accum_grad, result->grad);
         free_gradient(result->grad);
         metrics->accuracy += result->metrics->accuracy;
         metrics->loss += result->metrics->loss;
@@ -169,10 +169,10 @@ struct metrics *train_step(model *m, float *x, float *y, float learning_rate,
     }
     free(result);
 
-    divide_grad_by_batch_size(accum_grad, batch_size);
+    divide_grad_by_batch_size_(accum_grad, batch_size);
 
     // Update weights
-    update_weights(m, accum_grad, learning_rate);
+    update_weights_(m, accum_grad, learning_rate);
 
     metrics->accuracy /= batch_size;
     metrics->loss /= batch_size;
@@ -229,7 +229,7 @@ void main()
     logistic_regressor->out_dim = 1; // just for cosmetic purposes. makes no diff
     
     printf("Initializing weights...\n");
-    initialize_weights(1337, logistic_regressor);
+    initialize_weights_(1337, logistic_regressor);
     
     printf("Training...\n");
     fit(logistic_regressor, weather_ds, 0.1f, 512, 500);

@@ -22,7 +22,7 @@ typedef struct
 } dataset;
 
 
-void initialize_weights(unsigned int seed, regressor *reg)
+void initialize_weights_(unsigned int seed, regressor *reg)
 {
     srand(seed);
     reg->w = (float) (rand() % 10);
@@ -83,7 +83,7 @@ regressor *grad(float *x, float *y, float *y_pred, const size_t n_samples)
     return gradient;
 }
 
-static inline void update_weights(regressor *reg, regressor *gradient,
+static inline void update_weights_(regressor *reg, regressor *gradient,
         float learning_rate)
 {
     reg->w -= learning_rate * gradient->w;
@@ -103,7 +103,7 @@ float train_step(regressor *reg, dataset *data, float learning_rate)
     regressor *gradient = grad(data->x, data->y, y_pred, data->n_samples);
     
     // Update weights
-    update_weights(reg, gradient, learning_rate);
+    update_weights_(reg, gradient, learning_rate);
 
     return loss;
 }
@@ -149,7 +149,7 @@ void main()
 {
     dataset *data = generate_input_data(1337, 256);
     regressor *reg = malloc(sizeof(regressor));
-    initialize_weights(999, reg);
+    initialize_weights_(999, reg);
     float learning_rate = 0.001f;
 
     fit(reg, data, learning_rate, 100);
