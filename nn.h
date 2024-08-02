@@ -83,8 +83,8 @@ static inline void free_grad_and_metrics(grad_and_metrics *gam)
 }
 
 
-double *sigmoid(double *x, const size_t dim);
-double *sigmoid_prime(double *x, const size_t dim);
+double sigmoid(double x);
+double sigmoid_prime(double x);
 double crossentropy_loss(double *y, double *y_pred, const size_t dim);
 
 void accumulate_grad_(mlp *accumulated_gradient, mlp* new_gradient);

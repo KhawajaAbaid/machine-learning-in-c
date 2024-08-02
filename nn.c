@@ -1,4 +1,4 @@
-#include "mlp_common.h"
+#include "nn.h"
 #include "random.h"
 
 
@@ -38,27 +38,16 @@ mlp *copy_mlp(mlp *source)
 }
 
 
-double *sigmoid(double *x, const size_t dim)
+double sigmoid(double x) 
 {
-    double *result = (double *) calloc(dim, sizeof(double));
-    for (size_t i = 0; i < dim; i++)
-    {
-        result[i] = 1.0 / (1.0 + exp(-x[i]));
-    }
-    return result;
+    return 1.0 / (1.0 + exp(-x));
 }
 
 
-double *sigmoid_prime(double *x, const size_t dim)
+double sigmoid_prime(double x)
 {
-    double *result = (double *) malloc(dim * sizeof(double));
-
-    double *sig = sigmoid(x, dim);
-    for (size_t i = 0; i < dim; i++)
-    {
-        result[i] = sig[i] * (1.0 - sig[i]); 
-    }
-    return result;
+    double sig = sigmoid(x);
+    return sig * (1.0 - sig); 
 }
 
 
