@@ -1,83 +1,9 @@
+#include "nn.h"
 #include "linalg.h"
 #include "datasets.h"
-#include "mlp_common.h"
 #include <stdio.h>
 #include <time.h>
 #include <stdbool.h>
-
-
-
-typedef struct
-{
-    double **z_all;
-    double **a_all;
-
-} outputs_with_logits;
-
-
-static inline double binary_crossentropy_loss(double y, double y_pred)
-{
-    return -((y * log(y_pred)) + ((1.0f - y) * log(1.0f - y_pred)));
-}
-
-
-static inline double *leaky_relu(double *x, double negative_slope, 
-        const size_t dim)
-{
-    double *result = malloc(dim * sizeof(double));
-    double r;
-    for (size_t i = 0; i < dim; i++)
-    {
-        r = (x[i] > 0.0) ? x[i] : 0.0;
-        r += negative_slope * ((x[i] < 0) ? x[i] : 0.0);
-        result[i] = r;
-    }
-    return result;
-}
-
-
-static inline double *leaky_relu_prime(double *x, double negative_slope, 
-        const size_t dim)
-{
-    double *result = malloc(dim * sizeof(double));
-    double r;
-    for (size_t i = 0; i < dim; i++)
-    {
-        r = (x[i] > 0.0) ? 1.0f : 0.0;
-        r += negative_slope * ((x[i] < 0) ? 1.0f : 0.0);
-        result[i] = r;
-    }
-    return result;
-}
-
-
-// we name it vectorized since math.h contains a definition for tanh
-static inline double *tanh_vectorized(double *x, const size_t dim)
-{
-    double *result = malloc(dim * sizeof(double));
-    for (size_t i = 0; i < dim; i++)
-    {
-        result[i] = tanhf(x[i]);
-    }
-    return result;
-}
-
-
-static inline double square(double x)
-{
-    return x * x;
-}
-
-
-static inline double *tanh_prime(double *x, const size_t dim)
-{
-    double *result = malloc(dim * sizeof(double));
-    for (size_t i = 0; i < dim; i++)
-    {
-        result[i] = 1.0f - square(tanh(x[i]));
-    }
-    return result;
-}
 
 
 static inline double *sample_noise(const unsigned int seed, size_t dim)

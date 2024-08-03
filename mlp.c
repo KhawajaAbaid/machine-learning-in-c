@@ -1,25 +1,9 @@
-#include "mlp_common.h"
+#include "nn.h"
+#include "ops.h"
 #include "linalg.h"
 #include "datasets.h"
-#include <math.h>
 #include <stdbool.h>
 
-
-size_t argmax(double *x, const size_t dim)
-{
-    size_t max_idx = 0;
-    double max = 0.0f;
-
-    for (size_t i = 0; i < dim; i++)
-    {
-        if (x[i] > max)
-        {
-            max = x[i];
-            max_idx = i;
-        }
-    }
-    return max_idx;
-}
 
 
 // FOR A SINGLE INSTANCE runs the forward pass computes grads
@@ -221,4 +205,5 @@ void main()
     free_mlp(model);
     free(mnist_ds->x);
     free(mnist_ds->y);
-    free(mnist_ds);}
+    free(mnist_ds);
+}
