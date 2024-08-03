@@ -174,3 +174,10 @@ double **matrix_scalar_addition(double **m, double s, const size_t n_rows,
     }
     return result;
 }
+
+
+double mean(double *v, const size_t dim)
+{
+    double sum = vector_sum(v, dim);
+    return sum / (double) dim;
+}
