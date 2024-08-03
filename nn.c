@@ -1,7 +1,10 @@
-#include "mlp_common.h"
+#include "nn.h"
 #include "random.h"
 
 
+/*
+ * ---------------- MLP RELATED FUNCTIONS ----------------
+ */
 // In our model, there's no standalone "input" layer.
 mlp *create_mlp(const size_t n_layers, const size_t *dims)
 {
@@ -20,7 +23,6 @@ mlp *create_mlp(const size_t n_layers, const size_t *dims)
     return model;
 }
 
-
 // Creates copy of a given mlp of the same structure but without weights
 mlp *copy_mlp(mlp *source)
 {
@@ -37,43 +39,6 @@ mlp *copy_mlp(mlp *source)
     return copied;
 }
 
-
-double *sigmoid(double *x, const size_t dim)
-{
-    double *result = (double *) calloc(dim, sizeof(double));
-    for (size_t i = 0; i < dim; i++)
-    {
-        result[i] = 1.0 / (1.0 + exp(-x[i]));
-    }
-    return result;
-}
-
-
-double *sigmoid_prime(double *x, const size_t dim)
-{
-    double *result = (double *) malloc(dim * sizeof(double));
-
-    double *sig = sigmoid(x, dim);
-    for (size_t i = 0; i < dim; i++)
-    {
-        result[i] = sig[i] * (1.0 - sig[i]); 
-    }
-    return result;
-}
-
-
-double crossentropy_loss(double *y, double *y_pred, const size_t dim)
-{
-    double loss = 0.0;
-
-    for (size_t i = 0; i < dim; i++)
-    {
-        loss += y[i] * log(y_pred[i]) + (1.0 - y[i]) * log(1.0 - y_pred[i]); 
-    }
-    return -loss;
-}
-
-
 void accumulate_grad_(mlp *accumulated_gradient, mlp* new_gradient)
 {
     for (size_t i = 0; i < accumulated_gradient->n_layers; i++)
@@ -88,7 +53,6 @@ void accumulate_grad_(mlp *accumulated_gradient, mlp* new_gradient)
         }
     }
 }
-
 
 // Divide sum of individual instance gradients by batch size to get avg
 void divide_grad_by_batch_size_(mlp *accumulated_gradient, size_t batch_size)
@@ -106,7 +70,6 @@ void divide_grad_by_batch_size_(mlp *accumulated_gradient, size_t batch_size)
     }
 }
 
-
 void update_weights_(mlp *model, mlp* gradient, double learning_rate)
 {
     for (size_t i = 0; i < model->n_layers; i++)
@@ -121,7 +84,6 @@ void update_weights_(mlp *model, mlp* gradient, double learning_rate)
         }
     }
 }
-
 
 void initialize_mlp_zeros_(mlp *model)
 {
@@ -141,8 +103,6 @@ void initialize_mlp_zeros_(mlp *model)
                 sizeof(double));
     }
 }
-
-
 
 void initialize_mlp_normal_(const unsigned int seed, mlp *model)
 {
@@ -172,7 +132,6 @@ void initialize_mlp_normal_(const unsigned int seed, mlp *model)
     }
 }
 
-
 void initialize_mlp_glorot_normal_(const unsigned int seed, mlp *model)
 {
     srand(seed);
@@ -200,3 +159,4 @@ void initialize_mlp_glorot_normal_(const unsigned int seed, mlp *model)
         l->b = b;
     }
 }
+
